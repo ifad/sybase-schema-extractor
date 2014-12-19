@@ -10,5 +10,5 @@ extractor.perform(:production, destination_filename)
 Stand alone utility for generating schema files
 
 ```ruby
-gem intall 'sybase-schema-extractor'
+gem intall 'sybase-schema-extractor', github: "ifad/sybase-schema-extractor"
 ```
