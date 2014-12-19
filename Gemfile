@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem "activerecord-sybase-adapter", github: "ifad/activerecord-sybase-adapter"
 gem "arel-sybase-visitor", github: "ifad/arel-sybase-visitor"
+gem "pg"
 
 gem "activerecord", "~> 4.1.8"
 gem "pry-byebug"

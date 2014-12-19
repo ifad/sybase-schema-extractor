@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require "./lib/schema_transfer"
+
+config     = ARGV[0]
+connection = ARGV[1]
+output     = ARGV[2]
+tables     = ARGV[3]
+
+def usage!
+  $stderr.puts "#{__FILE__} <config_filename> <connection_name> <output_filename> [file_with_list_of_tables_to_include]"
+  $stderr.puts
+  $stderr.puts "e.g."
+  $stderr.puts "#{__FILE__} ./config/database.yml production schema.rb"
+  exit -1
+end
+
+usage! unless config && connection && output
+extractor = Extraction.perform(config, connection, output, tables)
