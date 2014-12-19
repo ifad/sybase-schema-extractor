@@ -1,4 +1,4 @@
-# Sybase::Schema::Extractor
+# SybaseSchemaExtractor
 
 ```ruby
 extractor = SybaseSchemaExtractor.new(yaml_filename)
