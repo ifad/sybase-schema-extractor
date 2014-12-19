@@ -18,7 +18,7 @@ describe SybaseSchemaExtractor do
   end
 
   it "has a one-line API for minimal surface area in the executable" do
-    SybaseSchemaExtractor.extract(config_filename, "dev_db", schema_filename)
+    SybaseSchemaExtractor.perform(config_filename, "dev_db", schema_filename)
 
     expect(matching_output_length).to eq expected.length
   end
