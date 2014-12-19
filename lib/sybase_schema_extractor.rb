@@ -3,6 +3,10 @@ require "active_record/connection_adapters/sybase_adapter"
 require "yaml"
 
 class SybaseSchemaExtractor
+  def self.perform(config, connection, schema_filename)
+    new(config).perform(connection, schema_filename)
+  end
+
   def initialize(config)
     @config = YAML.load File.read(config)
     ActiveRecord::Base.configurations = @config
@@ -10,11 +14,13 @@ class SybaseSchemaExtractor
 
   def perform(connection, schema_filename)
     setup_database_tasks!
-    ActiveRecord::Base.establish_connection(connection)
+    ActiveRecord::Base.establish_connection(connection.to_sym)
 
     File.open(schema_filename, "w:utf-8") do |file|
       ActiveRecord::SchemaDumper.dump(ActiveRecord::Base.connection, file)
     end
+
+    puts "Schema extracted to #{File.expand_path schema_filename}"
   end
 
   private
