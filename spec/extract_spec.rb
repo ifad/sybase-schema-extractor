@@ -2,6 +2,7 @@ describe SybaseSchemaExtractor do
   let(:extractor){ SybaseSchemaExtractor.new config }
   let(:config) { YAML.load "./config/database.yml" }
   let(:schema_filename) { "./tmp/schema.rb" }
+  let(:schema) { File.read(schema_filename) }
 
   before do
     begin
@@ -14,10 +15,9 @@ describe SybaseSchemaExtractor do
   it "extracts the schema" do
     extractor.perform(:dev_db, schema_filename)
 
-    file = File.read(schema_filename)
-    schema_section = "ActiveRecord::Schema.define(version: 0)"
-    matching_length =  file[schema_section].length
+    expected = "ActiveRecord::Schema.define(version: 0)"
+    length =  schema[expected].length
 
-    expect(matching_length).to eq schema_section.length
+    expect(length).to eq expected.length
   end
 end
