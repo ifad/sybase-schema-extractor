@@ -1,14 +1,24 @@
-# SybaseSchemaExtractor
+# SchemaTransfer
 
-```ruby
-extractor = SybaseSchemaExtractor.new(yaml_filename)
-extractor.perform(:production, destination_filename)
+```bash
+git clone https://github.com/ifad/sybase-schema-extractor.git
+cd sybase-schema-extractor
+
+#example usage
+./bin/transfer-schema ../my-project/config/database.yml production test ../my-project/tables.txt
 ```
 
-## Installation
-
-Stand alone utility for generating schema files
+Where tables.txt is something like
+#Export tables from other project
 
 ```ruby
-gem 'sybase-schema-extractor', github: "ifad/sybase-schema-extractor"
+#in a console
+
+File.open("tables.txt", "w") do |file|
+  Dir.glob("./app/models/**/*.rb").each{|f| require f }
+    ActiveRecord::Base.descendants.map(&:table_name).each do |table_name|
+      file << "#{table_name}\n"
+    end
+  end
+end
 ```
