@@ -1,19 +1,6 @@
 describe Extraction do
-  let(:extraction){ Extraction.new config_filename, schema_filename }
-  let(:config_filename) { "./config/database.yml" }
-  let(:schema_filename) { "./tmp/schema.rb" }
-  let(:include_table_file) { "config/include_tables.txt" }
-
-  before do
-    FileUtils.rm_rf "./tmp/schema.rb"
-    ActiveRecord::SchemaDumper.ignore_tables = []
-  end
-
-
-  #don't memoize so we can re-read after changes
-  def schema
-    File.read(schema_filename) rescue nil
-  end
+  include SharedSpecSetup
+  let(:extraction){ Extraction.new schema_filename }
 
   let(:expected) {"ActiveRecord::Schema.define(version: 0)"}
   let(:matching_output_length) { schema[expected].length }
@@ -80,9 +67,9 @@ describe Extraction do
       before do
         extraction.setup_database_tasks!(:production)
       end
-      it do
 
-        result = extraction.mark_tables_to_exclude!(:production, include_table_file)
+      it do
+        extraction.mark_tables_to_exclude!(:production, include_table_file)
 
         expect(ActiveRecord::SchemaDumper.ignore_tables).to eq ["tmp_delete_me", "another_unused"]
       end
@@ -91,7 +78,7 @@ describe Extraction do
 
   describe ".extract" do
     it "has a one-line API for minimal surface area in the executable" do
-      Extraction.perform(config_filename, "production", schema_filename, include_table_file)
+      Extraction.perform("production", schema_filename, include_table_file)
 
       expect(matching_output_length).to eq expected.length
     end

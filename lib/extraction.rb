@@ -1,8 +1,8 @@
 class Extraction
   include SybaseSchema::Shared
 
-  def self.perform(config_filename, connection, schema_filename, tables_to_include_filename=nil)
-    new(config_filename, schema_filename).
+  def self.perform(connection, schema_filename, tables_to_include_filename=nil)
+    new(schema_filename).
       perform(connection, tables_to_include_filename)
   end
 

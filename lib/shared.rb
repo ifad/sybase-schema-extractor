@@ -2,10 +2,8 @@ class SybaseSchema
   module Shared
     attr_reader :schema_filename
 
-    def initialize(config_filename, schema_filename)
+    def initialize(schema_filename)
       @schema_filename = schema_filename
-      config = YAML.load(File.read(config_filename)).with_indifferent_access
-      ActiveRecord::Base.configurations = config
     end
 
     def read_schema_file

@@ -15,4 +15,5 @@ def usage!
 end
 
 usage! unless config && connection && output
-extractor = Extraction.perform(config, connection, output, tables)
+YamlActiveRecordConnection.establish! config
+extractor = Extraction.perform(connection, output, tables)
