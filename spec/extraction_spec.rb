@@ -50,14 +50,15 @@ describe Extraction do
     before do
       expect(extraction).to receive(:read_schema_file).
         and_return sample_schema
+    end
 
-      expect(extraction).to receive(:read_included_tables).
-        and_return "VALID_TABLE\n"
+    let(:extraction) do
+      Extraction.new(schema_filename, ["VALID_TABLE"])
     end
 
     describe "#unused_tables" do
       it do
-        result = extraction.unused_tables(anything)
+        result = extraction.unused_tables
 
         expect(result).to eq ["tmp_delete_me", "another_unused"]
       end
@@ -69,7 +70,7 @@ describe Extraction do
       end
 
       it do
-        extraction.mark_tables_to_exclude!(:production, include_table_file)
+        extraction.mark_tables_to_exclude!(:production)
 
         expect(ActiveRecord::SchemaDumper.ignore_tables).to eq ["tmp_delete_me", "another_unused"]
       end
@@ -78,19 +79,9 @@ describe Extraction do
 
   describe ".extract" do
     it "has a one-line API for minimal surface area in the executable" do
-      Extraction.perform("production", schema_filename, include_table_file)
+      Extraction.perform("production", schema_filename, tables_to_include)
 
       expect(matching_output_length).to eq expected.length
     end
   end
-
-  it "has an extract executable" do
-    output = `bin/extract #{config_filename} production #{schema_filename} 2>&1`
-
-    expect(output).to match /extracted to/
-    expect(output).to match /#{schema_filename}/
-
-    expect(matching_output_length).to eq expected.length
-  end
-
 end

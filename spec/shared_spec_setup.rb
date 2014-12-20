@@ -11,8 +11,8 @@ module SharedSpecSetup
     "./tmp/schema.rb"
   end
 
-  def include_table_file
-    "config/include_tables.txt"
+  def tables_to_include
+    File.readlines("config/include_tables.txt").map(&:chomp)
   end
 
   def tables

@@ -1,15 +1,20 @@
 class Extraction
   include SybaseSchema::Shared
 
-  def self.perform(connection, schema_filename, tables_to_include_filename=nil)
-    new(schema_filename).
-      perform(connection, tables_to_include_filename)
+  def self.perform(connection, schema_filename, tables=[])
+    new(schema_filename, tables).
+      perform(connection)
   end
 
-  def perform(connection, tables_to_include_filename=nil)
+  def initialize(schema_filename, tables=[])
+    super schema_filename
+    @tables = tables
+  end
+
+  def perform(connection)
     setup_database_tasks!(connection.to_sym)
 
-    mark_tables_to_exclude!(connection, tables_to_include_filename)
+    mark_tables_to_exclude!(connection)
 
     dump_schema!
 
@@ -20,12 +25,10 @@ class Extraction
   # SchemaDumper doesn't allow specifying tables, only which to exclude.
   # We have to calculate which ones to exclude by dumping the schema
   # first and subtracting the difference
-  def mark_tables_to_exclude!(connection, filename)
-    return unless File.exists?(filename.to_s)
-
+  def mark_tables_to_exclude!(connection)
     dump_schema!
 
-    ActiveRecord::SchemaDumper.ignore_tables = unused_tables(filename)
+    ActiveRecord::SchemaDumper.ignore_tables = unused_tables()
   end
 
   def dump_schema!
@@ -34,19 +37,13 @@ class Extraction
     end
   end
 
-  def unused_tables(tables_to_include_filename)
-    wanted_tables = read_included_tables(tables_to_include_filename).split "\n"
-
+  def unused_tables
     all_tables = read_schema_file.map do |t|
       match = t.match /create_table "([^"]+)"/
       match[1] if match
     end.compact
 
-    all_tables - wanted_tables
-  end
-
-  def read_included_tables(tables_to_include_filename)
-    File.read(tables_to_include_filename)
+    all_tables - @tables
   end
 end
 
