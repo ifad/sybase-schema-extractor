@@ -13,6 +13,7 @@ describe Insertion do
 
   before do
     FileUtils.rm_rf "./tmp/schema.rb"
+    ActiveRecord::SchemaDumper.ignore_tables = []
   end
 
 
