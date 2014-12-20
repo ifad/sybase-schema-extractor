@@ -8,7 +8,6 @@ class Extraction
 
   def perform(connection, tables_to_include_filename=nil)
     setup_database_tasks!(connection.to_sym)
-    ActiveRecord::Base.establish_connection(connection.to_sym)
 
     mark_tables_to_exclude!(connection, tables_to_include_filename)
 
@@ -22,7 +21,7 @@ class Extraction
   # We have to calculate which ones to exclude by dumping the schema
   # first and subtracting the difference
   def mark_tables_to_exclude!(connection, filename)
-    return unless  File.exists?(filename.to_s)
+    return unless File.exists?(filename.to_s)
 
     dump_schema!
 

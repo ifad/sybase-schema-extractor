@@ -23,8 +23,6 @@ class Insertion
 
   def invalid_rules
     [
-      [/integer (.*)\,\s*limit: (\d\d|9)/, "integer \\1"],
-
       #skip indexes as some are invalid and we won't have
       #large numbers of records in a test db
       [/.*add_index.*/, ""]

@@ -11,33 +11,29 @@ describe Insertion do
     "config/include_tables.txt"
   end
 
+  before do
+    FileUtils.rm_rf "./tmp/schema.rb"
+  end
+
 
   #don't memoize so we can re-read after changes
   def schema
     File.read(schema_filename) rescue nil
   end
 
-  before(:all) do
-    extract_schema!
-  end
-
-  def extract_schema!
-    File.delete schema_filename rescue nil
-    Extraction.perform(config_filename, :production, schema_filename, include_table_file)
-  end
-
   let(:insertion){ Insertion.new config_filename, schema_filename }
 
   describe "#perform" do
+    before do
+      Extraction.perform(config_filename, :production, schema_filename, include_table_file)
+    end
+
     #don't memoize
     def tables
       ActiveRecord::Base.connection.tables.sort
     end
 
     it "inserts schema in postgres" do
-      #ensure fresh schema
-      extract_schema!
-
       expect(ActiveRecord::Base.connection.adapter_name).to eq "Sybase"
       expect(tables.length).to be > 0
 
@@ -50,28 +46,10 @@ describe Insertion do
     end
   end
 
-  describe "remove_invalid_attributes_from_line!" do
-    it do
-      line = 't.integer "row_id",  limit: 10, null: false'
+  it "#remove_invalid_lines" do
+    line = '   add_index :something'
+    result = insertion.remove_invalid_attributes_from_line!(line)
 
-      expect(insertion.remove_invalid_attributes_from_line!(line)).
-        to eq 't.integer "row_id", null: false'
-    end
-  end
-
-  describe "#remove_invalid_attributes!" do
-    before do
-      #ensure schema not already been cleaned up
-      extract_schema!
-    end
-    context "sybase generates integers with limit of 9" do
-      it "ignores this limit" do
-        expect(schema).to match /integer.*limit: 9/
-
-        insertion.remove_invalid_attributes!
-
-        expect(schema).not_to match /integer.* limit: 9/
-      end
-    end
+    expect(result).to eq ''
   end
 end

@@ -5,8 +5,10 @@ describe Extraction do
   let(:include_table_file) { "config/include_tables.txt" }
 
   before do
-    File.delete schema_filename rescue nil
+    FileUtils.rm_rf "./tmp/schema.rb"
+    ActiveRecord::SchemaDumper.ignore_tables = []
   end
+
 
   #don't memoize so we can re-read after changes
   def schema
@@ -71,6 +73,18 @@ describe Extraction do
         result = extraction.unused_tables(anything)
 
         expect(result).to eq ["tmp_delete_me", "another_unused"]
+      end
+    end
+
+    describe "#mark_tables_to_exclude!" do
+      before do
+        extraction.setup_database_tasks!(:production)
+      end
+      it do
+
+        result = extraction.mark_tables_to_exclude!(:production, include_table_file)
+
+        expect(ActiveRecord::SchemaDumper.ignore_tables).to eq ["tmp_delete_me", "another_unused"]
       end
     end
   end
