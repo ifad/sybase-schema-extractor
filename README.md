@@ -1,6 +1,6 @@
 # SchemaTransfer
 
-##example usage
+##Example Usage
 ```bash
 git clone https://github.com/ifad/sybase-schema-extractor.git
 cd sybase-schema-extractor
@@ -9,7 +9,8 @@ bundle install
 ./bin/transfer-schema ../my-project/config/database.yml production test ../my-project/tables.txt
 ```
 
-```
+##Details
+```bash
 bundle exec ruby bin/transfer-schema <config_filename> <from> <to> [file_with_list_of_tables_to_include]
   file_with_list_of_tables_to_include (separated by \n)
   from (source config block in the config file)
@@ -17,7 +18,7 @@ bundle exec ruby bin/transfer-schema <config_filename> <from> <to> [file_with_li
 
   e.g.
   bin/transfer-schema ./config/database.yml production test tables.txt
-`
+```
 
 Where tables.txt is something like
 #Export tables from other project
