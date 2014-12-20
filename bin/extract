@@ -16,4 +16,5 @@ end
 
 usage! unless config && connection && output
 YamlActiveRecordConnection.establish! config
+tables = File.readlines(tables).map(&:chomp) rescue []
 extractor = Extraction.perform(connection, output, tables)
