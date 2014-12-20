@@ -12,9 +12,46 @@
   #  credentials: go
   #  in: here
   #
-  #test_db:
+  #test:
   #  adapter: pg
   #  credentials: go
   #  in: here
   #
+describe SchemaTransfer do
+  include SharedSpecSetup
+  let(:transfer) { SchemaTransfer.new(
+    from: :production,
+    to: :test,
+    tables: tables_to_include)}
 
+  before do
+    #sanity checks
+    with_connection(:production)  { expect(adapter).to eq "Sybase" }
+    with_connection(:test)        do
+      expect(adapter).to eq "PostgreSQL"
+
+      ActiveRecord::Base.connection.tap do |c|
+        c.tables.each do |t|
+          c.drop_table t
+        end
+      end
+    end
+  end
+
+  it do
+    with_connection(:production) do
+      @prod_table_count = tables.length
+      expect(@prod_table_count).to be > 0
+    end
+    with_connection(:test) do
+      expect(tables.length).to eq 0
+    end
+
+    transfer.perform
+
+    with_connection(:test) do
+      table_count = (tables - ["schema_migrations"]).length
+      expect(table_count).to eq tables_to_include.length
+    end
+  end
+end
