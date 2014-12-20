@@ -1,6 +1,10 @@
 class Insertion
   include SybaseSchema::Shared
 
+  def self.perform(to, schema_filename)
+    new(schema_filename).perform(to)
+  end
+
   def perform(connection)
     setup_database_tasks!(connection.to_sym)
     remove_invalid_attributes!

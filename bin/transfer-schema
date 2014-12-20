@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+require "./lib/schema_transfer"
+
+config = ARGV[0]
+from   = ARGV[1]
+to     = ARGV[2]
+tables = ARGV[3]
+
+def usage!
+  $stderr.puts "#{__FILE__} <config_filename> <from> <to> [file_with_list_of_tables_to_include]"
+  $stderr.puts "  file_with_list_of_tables_to_include (separated by \\n)"
+  $stderr.puts "  from (source config block in the config file)"
+  $stderr.puts "  to   (destination config block in the config file)"
+  $stderr.puts
+  $stderr.puts "e.g."
+  $stderr.puts "#{__FILE__} ./config/database.yml production test tables.txt"
+  exit -1
+end
+
+usage! unless config && from && to
+extractor = SchemaTransfer.perform(config: config, from: from, to: to, tables: tables)

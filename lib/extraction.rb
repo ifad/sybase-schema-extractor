@@ -2,8 +2,7 @@ class Extraction
   include SybaseSchema::Shared
 
   def self.perform(connection, schema_filename, tables=[])
-    new(schema_filename, tables).
-      perform(connection)
+    new(schema_filename, tables).perform(connection)
   end
 
   def initialize(schema_filename, tables=[])
