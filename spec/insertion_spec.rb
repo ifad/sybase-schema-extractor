@@ -4,7 +4,7 @@ describe Insertion do
 
   describe "#perform" do
     before do
-      Extraction.perform(:production, schema_filename, include_table_file)
+      Extraction.perform(:production, schema_filename, tables_to_include)
     end
 
     it "inserts schema in postgres" do
@@ -15,8 +15,7 @@ describe Insertion do
 
       expect(adapter).to eq "PostgreSQL"
 
-      expected_tables = File.readlines(include_table_file).sort.map(&:chomp)
-      expect(tables - ["schema_migrations"]).to match_array(expected_tables)
+      expect(tables - ["schema_migrations"]).to match_array(tables_to_include)
     end
   end
 
