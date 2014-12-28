@@ -1,4 +1,4 @@
-RSpec.describe RemoveStringPrimaryKey do
+RSpec.describe EnableStringPrimaryKey do
   #http://stackoverflow.com/questions/1200568/using-rails-how-can-i-set-my-primary-key-to-not-be-an-integer-typed-column/15297616#15297616
   let(:eggs) {
     kw! <<-FILE
@@ -32,7 +32,7 @@ RSpec.describe RemoveStringPrimaryKey do
     FILE
   end
 
-  let(:removal) { RemoveStringPrimaryKey.new }
+  let(:removal) { EnableStringPrimaryKey.new }
 
   describe "#split_into_tables" do
     it do

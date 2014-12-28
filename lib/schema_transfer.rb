@@ -6,7 +6,7 @@ require "./lib/shared"
 require "./lib/extraction"
 require "./lib/insertion"
 require "./lib/yaml_active_record_connection"
-require "./lib/remove_string_primary_key"
+require "./lib/enable_string_primary_key"
 require "./lib/adapter_specific_transformation"
 
 class SchemaTransfer

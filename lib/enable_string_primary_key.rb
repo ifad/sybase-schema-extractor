@@ -1,4 +1,4 @@
-class RemoveStringPrimaryKey
+class EnableStringPrimaryKey
   def self.perform(schema)
     new.perform(schema)
   end
