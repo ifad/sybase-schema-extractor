@@ -1,4 +1,4 @@
-describe Extraction do
+RSpec.describe Extraction do
   include SharedSpecSetup
   let(:extraction){ Extraction.new schema_filename }
 
@@ -12,11 +12,6 @@ describe Extraction do
 
       expect(matching_output_length).to eq expected.length
     end
-  end
-
-  def strip_heredoc(s)
-    indent = s.scan(/^[ \t]*(?=\S)/).min.try(:size) || 0
-    s.gsub(/^[ \t]{#{indent}}/, '')
   end
 
 

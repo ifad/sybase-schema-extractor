@@ -1,4 +1,4 @@
-describe Insertion do
+RSpec.describe Insertion do
   include SharedSpecSetup
   let(:insertion){ Insertion.new schema_filename }
 

@@ -17,7 +17,7 @@
   #  credentials: go
   #  in: here
   #
-describe SchemaTransfer do
+RSpec.describe SchemaTransfer do
   include SharedSpecSetup
   let(:transfer) { SchemaTransfer.new(
     from: :production,

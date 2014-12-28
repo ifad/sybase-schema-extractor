@@ -3,10 +3,19 @@ require "schema_transfer"
 require "fileutils"
 require "shared_spec_setup"
 
+module SpecHelpers
+  def strip_heredoc(s)
+    indent = s.scan(/^[ \t]*(?=\S)/).min.try(:size) || 0
+    s.gsub(/^[ \t]{#{indent}}/, '')
+  end
+end
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
+
+  config.include SpecHelpers
 
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true

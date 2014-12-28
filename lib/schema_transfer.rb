@@ -1,10 +1,13 @@
 require "active_record"
 require "active_record/connection_adapters/sybase_adapter"
 require "yaml"
+
 require "./lib/shared"
 require "./lib/extraction"
 require "./lib/insertion"
 require "./lib/yaml_active_record_connection"
+require "./lib/remove_string_primary_key"
+require "./lib/adapter_specific_transformation"
 
 class SchemaTransfer
   def self.perform(*args)
@@ -22,6 +25,7 @@ class SchemaTransfer
   def perform
     with_tempfile do |filename|
       Extraction.perform(@from, filename, @tables)
+      AdapterSpecificTransformation.perform(@from, @to, filename)
       Insertion.perform(@to,    filename)
     end
 
