@@ -1,5 +1,10 @@
-RSpec.describe("executables") do
+RSpec.describe("executables", skip_db_cleaner: true) do
   include SharedSpecSetup
+  before do
+    #migrations don't work if we are still connected to the db
+    ActiveRecord::Base.remove_connection
+  end
+
 
   it "extracts the schema" do
     output = `bin/extract #{config_filename} production #{schema_filename} 2>&1`

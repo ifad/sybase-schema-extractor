@@ -6,8 +6,9 @@ require "./lib/shared"
 require "./lib/extraction"
 require "./lib/insertion"
 require "./lib/yaml_active_record_connection"
-require "./lib/enable_string_primary_key"
-require "./lib/adapter_specific_transformation"
+require "./lib/schema_table_helpers"
+require "./lib/execute_string_primary_key_migrations"
+require "./lib/remove_integer_primary_key"
 
 class SchemaTransfer
   def self.perform(*args)
@@ -25,8 +26,14 @@ class SchemaTransfer
   def perform
     with_tempfile do |filename|
       Extraction.perform(@from, filename, @tables)
-      AdapterSpecificTransformation.perform(@from, @to, filename)
-      Insertion.perform(@to,    filename)
+
+      RemoveIntegerPrimaryKey.perform(filename) if alter_string_primary_keys?
+
+      Insertion.perform(@to, filename)
+
+      if alter_string_primary_keys?
+        ExecuteStringPrimaryKeyMigrations.perform(filename, @from, @to)
+      end
     end
 
     puts "transferred schema from #{@from} to #{@to}"
@@ -55,6 +62,19 @@ class SchemaTransfer
     end
   end
 
+  def alter_string_primary_keys?
+    (from_adapter == "sybase") && (to_adapter == "postgresql")
+  end
 
+  def adapter(connection)
+    ActiveRecord::Base.configurations[connection][:adapter]
+  end
+
+  def to_adapter
+    adapter @to
+  end
+
+  def from_adapter
+    adapter @from
+  end
 end
-

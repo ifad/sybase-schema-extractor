@@ -1,22 +1,22 @@
-  #these specs whilst as generic as possilbe dependent on a specific
-  #config/database.yml not in git
-  #
-  #Currently targetting loading a schema from a sybase install over which we
-  #have no control and loading into a postgres db for testing which we can
-  #control and create records/specs/factories etc.
-  #
-  #They expect something like:
-  #
-  #production:
-  #  adapter: sybase
-  #  credentials: go
-  #  in: here
-  #
-  #test:
-  #  adapter: pg
-  #  credentials: go
-  #  in: here
-  #
+#these specs whilst as generic as possilbe dependent on a specific
+#config/database.yml not in git
+#
+#Currently targetting loading a schema from a sybase install over which we
+#have no control and loading into a postgres db for testing which we can
+#control and create records/specs/factories etc.
+#
+#They expect something like:
+#
+#production:
+#  adapter: sybase
+#  credentials: go
+#  in: here
+#
+#test:
+#  adapter: pg
+#  credentials: go
+#  in: here
+#
 RSpec.describe SchemaTransfer do
   include SharedSpecSetup
   let(:transfer) { SchemaTransfer.new(
@@ -50,8 +50,7 @@ RSpec.describe SchemaTransfer do
     transfer.perform
 
     with_connection(:test) do
-      table_count = (tables - ["schema_migrations"]).length
-      expect(table_count).to eq tables_to_include.length
+      expect(tables - ["schema_migrations"]).to match_array tables_to_include
     end
   end
 end
